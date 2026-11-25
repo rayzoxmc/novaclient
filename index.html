@@ -2,382 +2,208 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-<title>Nova Client – Mod Minecraft</title>
-
-<meta name="description" content="Téléchargez Nova Client, un mod Fabric pour Minecraft 1.21+.">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Launcher – Launcher Minecraft avec recherche de mods</title>
+<meta name="description" content="Nova Launcher : un launcher Minecraft gratuit avec recherche de mods Modrinth, instances Fabric et connexion Microsoft. Téléchargement pour Windows (.exe).">
 <link rel="icon" type="image/png" href="images/nova-logo.png">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-
 <style>
-/* Carte Nova Launcher */
-.card.dl.launcher{
-    max-width:1100px;
-    margin:28px auto 0;
-    display:grid;
-    grid-template-columns:1.2fr 1fr;
-    gap:32px;
-    align-items:center;
-    padding:28px 32px;
-}
-.launcher .launcher-info{position:relative}
-.launcher .os-btns{display:flex;flex-direction:column;gap:10px}
-.launcher .os-btns .btn{justify-content:center;text-align:center}
-.launcher .note{font-size:12px;opacity:.6;margin-top:6px;line-height:1.5}
-@media (max-width:760px){
-    .card.dl.launcher{grid-template-columns:1fr;padding:22px}
-}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#060818;--card:#0a0e1f;--bd:rgba(99,82,255,.18);--bdb:rgba(99,82,255,.4);--ac:#6352FF;--ach:#7a6aff;--act:#8376fc;--t:#f0f2ff;--m:#7a81a8;--ok:#22c55e;--nav:rgba(6,8,24,.85)}
+@media (prefers-color-scheme:light){:root{--bg:#f6f6ff;--card:#fff;--act:#5242e0;--t:#12142b;--m:#585f85;--nav:rgba(246,246,255,.88)}}
+html{scroll-behavior:smooth;scroll-padding-top:80px;overflow-x:clip}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden}
+a{color:inherit}
+h1,h2,.serif{font-family:'DM Serif Display',serif;font-weight:400}
+em{color:var(--act)}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.rv.on,.no-js .rv{opacity:1;transform:none}
+
+nav{position:fixed;inset:0 0 auto;z-index:10;height:68px;padding:0 clamp(16px,4vw,48px);display:flex;align-items:center;justify-content:space-between;background:var(--nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--bd)}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;font-weight:600}
+.logo img{width:36px;height:36px;border-radius:10px;filter:drop-shadow(0 0 8px rgba(99,82,255,.4))}
+.links{display:flex;gap:30px;list-style:none;position:absolute;left:50%;transform:translateX(-50%)}
+.links a{text-decoration:none;color:var(--m);font-size:.9rem;transition:color .25s}.links a:hover{color:var(--t)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--ac);color:#fff;border:0;padding:11px 22px;border-radius:10px;font:600 .875rem 'DM Sans',sans-serif;text-decoration:none;cursor:pointer;transition:all .25s}
+.btn:hover{background:var(--ach);transform:translateY(-1px);box-shadow:0 6px 24px rgba(99,82,255,.4)}
+.btn.lg{padding:16px 34px;font-size:1rem}
+.btn.ghost{background:transparent;color:var(--m);border:1px solid var(--bd)}.btn.ghost:hover{color:var(--t);border-color:var(--bdb);box-shadow:none}
+
+.hero{position:relative;min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;max-width:1200px;margin:0 auto;padding:110px clamp(20px,4vw,48px) 60px}
+.hero::before{content:"";position:absolute;width:520px;height:520px;right:-80px;top:10%;background:radial-gradient(circle,rgba(99,82,255,.28),transparent 70%);filter:blur(70px);z-index:-1}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;color:var(--act);background:rgba(99,82,255,.12);border:1px solid var(--bd);border-radius:20px;padding:6px 14px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 4px rgba(34,197,94,.15)}
+h1{font-size:clamp(2.4rem,5.5vw,4rem);line-height:1.1;margin:20px 0 16px}
+.lead{color:var(--m);font-size:1.05rem;max-width:520px}
+.acts{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 18px}
+.meta{display:flex;gap:18px;flex-wrap:wrap;font-size:.82rem;color:var(--m)}.meta span::before{content:"✓ ";color:var(--ok)}
+
+/* aperçu de l'app */
+.mock{background:radial-gradient(ellipse at 50% 20%,#0c0c40,#07071a 70%);border:1px solid #2c2c4a;border-radius:14px;box-shadow:0 30px 80px rgba(99,82,255,.25);overflow:hidden;color:#e9e8f7;font-size:12px}
+.mbar{display:flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-bottom:1px solid #15153a;background:rgba(5,5,20,.6)}
+.mbar b{font-weight:500;color:#8f8db3;padding:5px 12px;border-radius:7px}.mbar b.on{background:#1b1a46;color:#e9e8f7}.mbar span{margin-right:auto;font-weight:500}
+.mbody{padding:18px 20px}.mbody h3{font:400 24px 'DM Serif Display',serif;margin-bottom:12px}.mbody h3 i{color:#a595ff}
+.mrow{display:flex;align-items:center;gap:12px;border:1px solid #23224a;border-radius:14px;background:rgba(14,14,40,.6);padding:10px 12px;margin-bottom:8px}
+.mrow .ic{width:38px;height:38px;border-radius:10px;background:#1b1a46;display:grid;place-items:center;font:400 17px 'DM Serif Display',serif;color:#a595ff}
+.mrow div:nth-child(2){flex:1}.mrow small{display:block;color:#8f8db3;font-size:10.5px}
+.mrow u{text-decoration:none;background:#6d55e6;border-radius:7px;padding:6px 12px;font-size:11px;font-weight:500}
+
+section{max-width:1100px;margin:0 auto;padding:90px clamp(20px,4vw,48px)}
+.head{text-align:center;margin-bottom:44px}
+.label{font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--act)}
+h2{font-size:clamp(1.9rem,4vw,2.7rem);margin:8px 0}.head p{color:var(--m)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:26px;transition:border-color .3s,transform .3s}
+.card:hover{border-color:var(--bdb);transform:translateY(-3px)}
+.card .ico{width:44px;height:44px;border-radius:12px;background:rgba(99,82,255,.12);display:grid;place-items:center;font-size:20px;margin-bottom:14px}
+.card h3{font-size:1.05rem;margin-bottom:6px}.card p{color:var(--m);font-size:.92rem}
+
+.dl{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center;padding:36px;border-color:var(--bdb);background:linear-gradient(160deg,rgba(99,82,255,.1),var(--card) 60%)}
+.dl:hover{transform:none}
+.dl .serif{font-size:2rem;line-height:1.2}.ver{color:var(--m);font-size:.9rem;margin:4px 0 16px}
+.dl ul{list-style:none;display:grid;gap:8px;font-size:.92rem}.dl li::before{content:"✓";color:var(--ok);margin-right:10px}
+.side{display:flex;flex-direction:column;gap:12px}
+.hash{font:12px/1.4 ui-monospace,Consolas,monospace;color:var(--m);word-break:break-all;cursor:pointer;border:1px dashed var(--bd);border-radius:10px;padding:10px 12px}
+.note{font-size:.8rem;color:var(--m)}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;counter-reset:s}
+.step{counter-increment:s;padding:24px;border-left:2px solid var(--bd)}
+.step::before{content:counter(s);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(99,82,255,.15);color:var(--act);font-weight:600;margin-bottom:12px}
+.step h3{font-size:1rem;margin-bottom:4px}.step p{color:var(--m);font-size:.9rem}
+code{background:rgba(99,82,255,.12);border-radius:6px;padding:2px 7px;font-size:.85em}
+
+.faq{max-width:760px;margin:0 auto;display:grid;gap:10px}
+details{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:16px 20px}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--act);font-size:1.2rem;line-height:1}details[open] summary::after{content:"–"}
+details p{color:var(--m);margin-top:10px;font-size:.92rem}
+
+.cta{text-align:center;padding:80px 20px}.cta p{color:var(--m);margin:6px 0 24px}
+footer{border-top:1px solid var(--bd);padding:24px clamp(20px,4vw,48px);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:var(--m);font-size:.82rem}
+
+@media (max-width:860px){.links{display:none}.hero{grid-template-columns:1fr;min-height:0;padding-top:100px}.dl{grid-template-columns:1fr;padding:26px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
+<body class="no-js">
 
-<body>
-
-<nav class="navbar">
-
-    <a class="logo" href="#">
-        <img src="images/nova-logo.png" alt="Nova Client Logo">
-        <span>Nova Client</span>
-    </a>
-
-    <ul class="nav-links">
-        <li><a href="#features">Fonctionnalités</a></li>
-        <li><a href="#download">Téléchargement</a></li>
-        <li><a href="#install">Installation</a></li>
-        <li><a href="#faq">FAQ</a></li>
-    </ul>
-
-    <a class="btn" href="#download">Télécharger</a>
-
+<nav>
+  <a class="logo" href="#"><img src="images/nova-logo.png" alt="Logo Nova"><span>Nova Launcher</span></a>
+  <ul class="links">
+    <li><a href="#features">Fonctionnalités</a></li>
+    <li><a href="#download">Téléchargement</a></li>
+    <li><a href="#install">Installation</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <a class="btn" href="#download">Télécharger</a>
 </nav>
 
 <header class="hero">
-
-    <div class="orb orb1"></div>
-    <div class="orb orb2"></div>
-
-    <div class="hero-in">
-
-        <div class="pill">
-            <span class="dot"></span>
-            v0.9 · Minecraft 1.21+
-        </div>
-
-        <h1>
-            The most <em>powerful</em><br>
-            ghost client for Minecraft.
-        </h1>
-
-        <p class="hero-desc">
-            Nova Client est un mod Fabric léger et entièrement configurable.
-            Téléchargez le .jar, glissez-le dans votre dossier mods, c’est prêt.
-        </p>
-
-        <div class="actions">
-            <a class="btn btn-lg" href="#download">
-                Télécharger Nova Client ↓
-            </a>
-
-            <a class="btn btn-ghost btn-lg" href="#features">
-                En savoir plus
-            </a>
-        </div>
-
-        <div class="meta">
-            <span>Gratuit</span>
-            <span>Fabric 1.21+</span>
-            <span>Mises à jour régulières</span>
-        </div>
-
+  <div>
+    <span class="pill"><span class="dot"></span>v1.0.0 · Windows 10 / 11</span>
+    <h1>Le launcher Minecraft avec <em>recherche de mods</em> intégrée.</h1>
+    <p class="lead">Parcourez Modrinth, installez un mod en un clic avec ses dépendances, créez vos instances Fabric et lancez le jeu avec votre compte Microsoft.</p>
+    <div class="acts">
+      <a class="btn lg" href="downloads/NovaLauncher-1.0.0-win.exe" download data-exe>Télécharger pour Windows (.exe)</a>
+      <a class="btn ghost lg" href="#features">En savoir plus</a>
     </div>
+    <div class="meta"><span>Gratuit</span><span>Connexion Microsoft officielle</span><span>Mods Modrinth</span></div>
+  </div>
+
+  <div class="mock" aria-hidden="true">
+    <div class="mbar"><span>✦ Nova</span><b class="on">Discover</b><b>Library</b><b>Account</b></div>
+    <div class="mbody">
+      <h3>Discover <i>mods</i></h3>
+      <div class="mrow"><div class="ic">S</div><div>Sodium<small>Moteur de rendu moderne · 12,3M téléchargements</small></div><u>Install</u></div>
+      <div class="mrow"><div class="ic">L</div><div>Lithium<small>Optimisation du serveur · 11,4M téléchargements</small></div><u>Install</u></div>
+      <div class="mrow"><div class="ic">M</div><div>Mod Menu<small>Gérez vos mods en jeu · 9,6M téléchargements</small></div><u>Install</u></div>
+    </div>
+  </div>
 </header>
 
-<section class="s" id="features">
-
-    <div class="head reveal">
-        <span class="label">Pourquoi Nova Client</span>
-        <h2>Ce que vous obtenez.</h2>
-        <p class="desc">Un mod pensé pour rester simple et performant.</p>
-    </div>
-
-    <div class="grid3">
-
-        <div class="card reveal">
-            <div class="ico">⚡</div>
-            <h3>Léger</h3>
-            <p>Impact minimal sur vos FPS, même sur les petites configs.</p>
-        </div>
-
-        <div class="card reveal">
-            <div class="ico">🎛️</div>
-            <h3>Configurable</h3>
-            <p>Chaque module s’active, se désactive et se règle en jeu.</p>
-        </div>
-
-        <div class="card reveal">
-            <div class="ico">🎨</div>
-            <h3>Interface moderne</h3>
-            <p>Un menu clair, avec thèmes et raccourcis personnalisables.</p>
-        </div>
-
-        <div class="card reveal">
-            <div class="ico">🔄</div>
-            <h3>Mises à jour</h3>
-            <p>Une nouvelle version à chaque changement de Minecraft.</p>
-        </div>
-
-        <div class="card reveal">
-            <div class="ico">🧩</div>
-            <h3>Compatible</h3>
-            <p>Fonctionne avec Fabric, Modrinth App, Prism et d’autres launchers.</p>
-        </div>
-
-        <div class="card reveal">
-            <div class="ico">💬</div>
-            <h3>Support</h3>
-            <p>Une question ? Rejoignez le Discord, on vous répond.</p>
-        </div>
-
-    </div>
+<section id="features">
+  <div class="head rv"><span class="label">Fonctionnalités</span><h2>Tout pour jouer avec des mods.</h2><p>Simple, rapide, sans configuration compliquée.</p></div>
+  <div class="grid">
+    <div class="card rv"><div class="ico">🔎</div><h3>Recherche de mods</h3><p>Filtrez par version, catégorie et popularité grâce à l’API Modrinth.</p></div>
+    <div class="card rv"><div class="ico">⬇️</div><h3>Installation en un clic</h3><p>Les dépendances requises sont installées automatiquement et chaque fichier est vérifié (SHA-1).</p></div>
+    <div class="card rv"><div class="ico">🗂️</div><h3>Instances</h3><p>Une instance par version et par loader (Fabric ou Vanilla), avec ses propres mods.</p></div>
+    <div class="card rv"><div class="ico">🔐</div><h3>Compte Microsoft</h3><p>Connexion via la fenêtre officielle Microsoft. Votre mot de passe n’est jamais stocké.</p></div>
+  </div>
 </section>
 
-<section class="s" id="download">
-
-    <div class="head reveal">
-        <span class="label">Téléchargement</span>
-        <h2>Choisissez votre version.</h2>
-        <p class="desc">Un seul fichier .jar par version de Minecraft, valable sur tous les systèmes.</p>
+<section id="download">
+  <div class="head rv"><span class="label">Téléchargement</span><h2>Téléchargez Nova Launcher.</h2><p>Un installateur Windows, c’est tout.</p></div>
+  <div class="card dl rv">
+    <div>
+      <div class="serif">Nova Launcher</div>
+      <div class="ver">Version 1.0.0 · Windows 10/11 (64 bits) · .exe</div>
+      <ul>
+        <li>Java installé (Java 21 pour Minecraft 1.20.5 et plus)</li>
+        <li>Une connexion Internet</li>
+        <li>Un compte Microsoft avec Minecraft Java Edition</li>
+      </ul>
     </div>
-
-    <div class="grid3">
-
-        <div class="card dl main reveal">
-
-            <span class="tag">Recommandé</span>
-
-            <div class="os">Minecraft 26.3</div>
-            <div class="ver">Nova Client v0.6 · 1,2 Mo · .jar</div>
-
-            <ul>
-                <li>Fabric Loader 0.16+</li>
-                <li>Fabric API requis</li>
-                <li>Windows, macOS et Linux</li>
-            </ul>
-
-            <a class="btn" href="downloads/NovaClient-mc26.3.jar" download>
-                Télécharger pour 26.3
-            </a>
-
-            <div class="hash">SHA-256 : à compléter</div>
-
-        </div>
-
-        <div class="card dl reveal">
-
-            <div class="os" style="margin-top:34px">Minecraft 26.2</div>
-            <div class="ver">Nova Client v0.6 · 1,2 Mo · .jar</div>
-
-            <ul>
-                <li>Fabric Loader 0.16+</li>
-                <li>Fabric API requis</li>
-                <li>Windows, macOS et Linux</li>
-            </ul>
-
-            <a class="btn btn-ghost" href="downloads/NovaClient-mc26.2.jar" download>
-                Télécharger pour 26.2
-            </a>
-
-            <div class="hash">SHA-256 : à compléter</div>
-
-        </div>
-
-        <div class="card dl reveal">
-
-            <div class="os" style="margin-top:34px">Minecraft 1.21.11</div>
-            <div class="ver">Nova Client v0.6 · 1,1 Mo · .jar</div>
-
-            <ul>
-                <li>Fabric Loader 0.16+</li>
-                <li>Fabric API requis</li>
-                <li>Windows, macOS et Linux</li>
-            </ul>
-
-            <a class="btn btn-ghost" href="downloads/NovaClient-mc1.21.11.jar" download>
-                Télécharger pour 1.21.11
-            </a>
-
-            <div class="hash">SHA-256 : à compléter</div>
-
-        </div>
-
+    <div class="side">
+      <a class="btn lg" href="downloads/NovaLauncher-1.0.0-win.exe" download data-exe>Télécharger (.exe)</a>
+      <div class="hash" id="hash" title="Cliquer pour copier">SHA-256 : à compléter</div>
+      <p class="note">Application non signée : Windows SmartScreen peut afficher un avertissement au premier lancement.</p>
     </div>
-
-    <!-- Nova Launcher -->
-    <div class="card dl launcher reveal">
-
-        <div class="launcher-info">
-
-            <span class="tag">Bêta</span>
-
-            <div class="os" style="margin-top:34px">Nova Launcher</div>
-            <div class="ver">v1.0.0 · Windows, macOS et Linux</div>
-
-            <ul>
-                <li>Choix de la version et lancement de Nova Client</li>
-                <li>Menu, thèmes et configurations au même endroit</li>
-                <li>Installation classique, aucun Java supplémentaire</li>
-            </ul>
-
-            <div class="hash">SHA-256 : à compléter</div>
-
-        </div>
-
-        <div class="os-btns">
-
-            <a class="btn btn-ghost" data-os="win" href="downloads/NovaLauncher-1.0.0-win.exe" download>
-                Télécharger pour Windows (.exe)
-            </a>
-
-            <a class="btn btn-ghost" data-os="mac" href="downloads/NovaLauncher-1.0.0-mac.dmg" download>
-                Télécharger pour macOS (.dmg)
-            </a>
-
-            <a class="btn btn-ghost" data-os="linux" href="downloads/NovaLauncher-1.0.0-linux.AppImage" download>
-                Télécharger pour Linux (.AppImage)
-            </a>
-
-            <p class="note">Application non signée : Windows peut afficher un avertissement SmartScreen.</p>
-
-        </div>
-
-    </div>
-
+  </div>
 </section>
 
-<section class="s" id="install">
-
-    <div class="head reveal">
-        <span class="label">Installation</span>
-        <h2>Prêt en quatre étapes.</h2>
-    </div>
-
-    <div class="steps">
-
-        <div class="step">
-            <div class="num">1</div>
-            <h3>Installez Fabric</h3>
-            <p>Installez Fabric Loader et Fabric API pour votre version de Minecraft.</p>
-        </div>
-
-        <div class="step">
-            <div class="num">2</div>
-            <h3>Téléchargez le mod</h3>
-            <p>Récupérez le .jar correspondant à votre version ci-dessus.</p>
-        </div>
-
-        <div class="step">
-            <div class="num">3</div>
-            <h3>Copiez dans « mods »</h3>
-            <p>Placez le fichier dans le dossier <code>.minecraft/mods</code>.</p>
-        </div>
-
-        <div class="step">
-            <div class="num">4</div>
-            <h3>Lancez le jeu</h3>
-            <p>Démarrez le profil Fabric et ouvrez le menu du mod en jeu.</p>
-        </div>
-
-    </div>
+<section id="install">
+  <div class="head rv"><span class="label">Installation</span><h2>Prêt en quatre étapes.</h2></div>
+  <div class="steps">
+    <div class="step rv"><h3>Téléchargez</h3><p>Récupérez <code>NovaLauncher-1.0.0-win.exe</code> avec le bouton ci-dessus.</p></div>
+    <div class="step rv"><h3>Installez</h3><p>Lancez le fichier. Si SmartScreen s’affiche : « Informations complémentaires », puis « Exécuter quand même ».</p></div>
+    <div class="step rv"><h3>Connectez-vous</h3><p>Onglet Account, puis « Sign in with Microsoft ».</p></div>
+    <div class="step rv"><h3>Créez et jouez</h3><p>Créez une instance, ajoutez des mods depuis Discover et cliquez sur Play.</p></div>
+  </div>
 </section>
 
-<section class="s" id="faq">
-
-    <div class="head reveal">
-        <span class="label">FAQ</span>
-        <h2>Questions fréquentes.</h2>
-    </div>
-
-    <div class="faq reveal">
-
-        <details>
-            <summary>Nova Client est-il gratuit ?</summary>
-            <p>Oui, le téléchargement et l’utilisation sont gratuits.</p>
-        </details>
-
-        <details>
-            <summary>Quelles versions de Minecraft sont supportées ?</summary>
-            <p>Les versions listées dans la section Téléchargement, sous Fabric. D’autres sont ajoutées à chaque mise à jour.</p>
-        </details>
-
-        <details>
-            <summary>Comment vérifier mon fichier ?</summary>
-            <p>Comparez la somme SHA-256 de votre .jar avec celle affichée sous le bouton de téléchargement.</p>
-        </details>
-
-        <details>
-            <summary>Le mod ne se lance pas, que faire ?</summary>
-            <p>Vérifiez que Fabric API est installé et que la version du mod correspond à celle de Minecraft.</p>
-        </details>
-
-    </div>
+<section id="faq">
+  <div class="head rv"><span class="label">FAQ</span><h2>Questions fréquentes.</h2></div>
+  <div class="faq rv">
+    <details><summary>Nova Launcher est-il gratuit ?</summary><p>Oui, le téléchargement et l’utilisation sont gratuits.</p></details>
+    <details><summary>Pourquoi Windows affiche-t-il un avertissement ?</summary><p>L’application n’est pas encore signée numériquement, ce qui déclenche SmartScreen sur les nouveaux fichiers. Vérifiez la somme SHA-256 avant de lancer l’installateur si vous voulez être sûr du fichier.</p></details>
+    <details><summary>Comment vérifier mon fichier ?</summary><p>Dans PowerShell : <code>Get-FileHash .\NovaLauncher-1.0.0-win.exe</code>, puis comparez avec la somme affichée sur cette page.</p></details>
+    <details><summary>Mon mot de passe est-il stocké ?</summary><p>Non. La connexion passe par la fenêtre officielle de Microsoft. Seul un jeton de session est conservé, chiffré avec le trousseau de Windows.</p></details>
+    <details><summary>Faut-il installer Java ?</summary><p>Oui, Java doit être installé sur votre PC : Java 21 pour Minecraft 1.20.5 et plus, Java 17 pour les versions précédentes.</p></details>
+    <details><summary>Je n’ai pas de compte Microsoft, puis-je jouer ?</summary><p>Un mode hors-ligne est disponible avec un pseudo de votre choix. Il fonctionne en solo et sur les serveurs qui l’autorisent.</p></details>
+  </div>
 </section>
 
-<div class="cta">
-
-    <div class="cta-in reveal">
-
-        <h2>Prêt quand vous l’êtes.</h2>
-
-        <p>Gratuit, léger, installé en moins d’une minute.</p>
-
-        <a class="btn btn-lg" href="#download">
-            Télécharger Nova Client
-        </a>
-
-    </div>
+<div class="cta rv">
+  <h2>Prêt quand vous l’êtes.</h2>
+  <p>Gratuit, installé en moins d’une minute.</p>
+  <a class="btn lg" href="downloads/NovaLauncher-1.0.0-win.exe" download data-exe>Télécharger pour Windows</a>
 </div>
 
 <footer>
-
-    <span>© 2026 Nova Client. Non affilié à Mojang Studios ni à Microsoft.</span>
-
-    <span>
-        <a href="#">Conditions</a>
-        <a href="#">Confidentialité</a>
-        <a href="#">Contact</a>
-    </span>
-
+  <span>© 2026 Nova Launcher. Non affilié à Mojang Studios ni à Microsoft.</span>
+  <span>Mods fournis par <a href="https://modrinth.com" rel="noopener">Modrinth</a></span>
 </footer>
 
-<script src="js/main.js"></script>
-
 <script>
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-        }
-    });
-}, { threshold: 0.12 });
+/* À modifier : lien du .exe (ex. une release GitHub) et somme SHA-256 */
+const EXE_URL = 'downloads/NovaLauncher-1.0.0-win.exe';
+const SHA256 = '';
 
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.body.classList.remove('no-js');
+document.querySelectorAll('[data-exe]').forEach(a => a.href = EXE_URL);
 
-/* Nova Launcher : met en avant le bouton du système du visiteur */
-(() => {
-    const ua = navigator.userAgent;
-    const os = /Mac/.test(ua) ? 'mac' : (/Linux|X11/.test(ua) && !/Android/.test(ua)) ? 'linux' : 'win';
-    document.querySelectorAll('.os-btns [data-os]').forEach(a =>
-        a.classList.toggle('btn-ghost', a.dataset.os !== os));
-})();
+const h = document.getElementById('hash');
+if (SHA256) h.textContent = 'SHA-256 : ' + SHA256;
+h.onclick = () => {
+  if (!SHA256 || !navigator.clipboard) return;
+  const old = h.textContent;
+  navigator.clipboard.writeText(SHA256).then(() => { h.textContent = 'Copié ✓'; setTimeout(() => h.textContent = old, 1500); });
+};
+
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('on'); io.unobserve(e.target); } }), { threshold: .1 });
+document.querySelectorAll('.rv').forEach(el => io.observe(el));
 </script>
-
 </body>
 </html>
